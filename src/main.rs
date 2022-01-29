@@ -7,7 +7,7 @@ use schedule::Schedule;
 use tokio;
 #[tokio::main]
 async fn main() {
-    let str = String::from("ПИН-192");
+    let str = String::from("ИВТ-191");
     let schedule: Schedule = Schedule::new(str).await;
     println!("{}", schedule);
 }

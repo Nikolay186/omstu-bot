@@ -28,7 +28,9 @@ impl Schedule {
         days.push(ScheduleDay::new("Суббота".to_string(), vec![]));
 
         for subject in src {
-            days[(subject["dayOfWeek"].as_u64().unwrap() - 1) as usize].add_subject(subject);
+            let day = &mut days[(subject["dayOfWeek"].as_u64().unwrap() - 1) as usize];
+            day.add_subject(subject);
+            day.set_date();
         }
 
         days
@@ -38,7 +40,9 @@ impl Schedule {
 impl fmt::Display for Schedule {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         for day in &self.days {
-            Display::fmt(day, f)?;
+            if day.date != "0" {
+                Display::fmt(day, f)?;
+            }
         }
 
         Ok(())

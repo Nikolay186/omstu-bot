@@ -2,6 +2,7 @@ use core::fmt;
 
 use serde_json::Value;
 
+#[derive(Clone)]
 pub struct Subject {
     name: String,
     start_time: String,
@@ -9,7 +10,7 @@ pub struct Subject {
     lecturer: String,
     auditorium: String,
     kind: String,
-    date: String,
+    pub date: String,
 }
 
 impl Subject {
@@ -37,7 +38,11 @@ impl fmt::Display for Subject {
             kind,
             date,
           } = self;
-
-        write!(f, "{name}\n{start_time} - {end_time}\n{auditorium}\n{lecturer}\n{kind}\n{date}\n\n")
+        
+        if f.alternate() {
+            write!(f, "{name}\n{start_time} - {end_time}\n{auditorium}\n{lecturer}\n{kind}\n{date}\n\n")
+        } else {
+            write!(f, "{name}\n{start_time} - {end_time}\n{auditorium}\n{lecturer}\n{kind}\n\n")
+        }
     }
 }
