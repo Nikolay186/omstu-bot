@@ -1,6 +1,7 @@
 use crate::subject::Subject;
 use core::fmt;
 use serde_json::Value;
+use tbot::markup::{bold, markdown_v2::Formattable};
 
 pub struct ScheduleDay {
     day: String,
@@ -24,11 +25,31 @@ impl ScheduleDay {
     pub fn set_date(&mut self) {
         self.date = self.subjects[0].date.clone();
     }
+
+    pub fn to_message(&self) -> impl Formattable {
+        let Self {
+            day,
+            subjects,
+            date,
+        } = self;
+
+        let mut subjects_vec: Vec<Box<dyn Formattable + Send>> = vec![];
+
+        for subject in subjects {
+            subjects_vec.push(Box::new(subject.to_message()));
+        }
+
+        (bold(day.clone() + " - " + date), "\n", subjects_vec)
+    }
 }
 
 impl fmt::Display for ScheduleDay {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let Self { day, subjects, date } = self;
+        let Self {
+            day,
+            subjects,
+            date,
+        } = self;
         writeln!(f, "{day} - ({date})");
         for subject in subjects {
             write!(f, "{subject}");

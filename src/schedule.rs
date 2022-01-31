@@ -3,6 +3,7 @@ use crate::schedule_day::ScheduleDay;
 use core::fmt;
 use core::fmt::Display;
 use serde_json::Value;
+use tbot::markup::markdown_v2::Formattable;
 
 pub struct Schedule {
     days: Vec<ScheduleDay>,
@@ -34,6 +35,18 @@ impl Schedule {
         }
 
         days
+    }
+
+    pub fn to_message(&self) -> impl Formattable {
+        let mut days_vec: Vec<Box<dyn Formattable + Send>> = vec![];
+
+        for day in &self.days {
+            if day.date != "0" {
+                days_vec.push(Box::new(day.to_message()));
+            }
+        }
+
+        days_vec
     }
 }
 

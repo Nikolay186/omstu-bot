@@ -1,6 +1,9 @@
 use core::fmt;
-
 use serde_json::Value;
+use tbot::markup::{
+    markdown_v2::Formattable,
+    {bold, italic, underline},
+};
 
 #[derive(Clone)]
 pub struct Subject {
@@ -25,6 +28,31 @@ impl Subject {
             date: json["date"].to_string().replace("\"", ""),
         }
     }
+
+    pub fn to_message(&self) -> impl Formattable {
+        let Self {
+            name,
+            start_time,
+            end_time,
+            auditorium,
+            lecturer,
+            kind,
+            ..
+        } = self;
+
+        (
+            bold(name.clone()),
+            "\n",
+            underline(start_time.clone() + " - " + end_time),
+            "\n",
+            bold(italic(auditorium.clone())),
+            "\n",
+            italic(kind.clone()),
+            "\n",
+            italic(lecturer.clone()),
+            "\n", "\n"
+        )
+    }
 }
 
 impl fmt::Display for Subject {
@@ -37,12 +65,18 @@ impl fmt::Display for Subject {
             lecturer,
             kind,
             date,
-          } = self;
-        
+        } = self;
+
         if f.alternate() {
-            write!(f, "{name}\n{start_time} - {end_time}\n{auditorium}\n{lecturer}\n{kind}\n{date}\n\n")
+            write!(
+                f,
+                "{name}\n{start_time} - {end_time}\n{auditorium}\n{lecturer}\n{kind}\n{date}\n\n"
+            )
         } else {
-            write!(f, "{name}\n{start_time} - {end_time}\n{auditorium}\n{lecturer}\n{kind}\n\n")
+            write!(
+                f,
+                "{name}\n{start_time} - {end_time}\n{auditorium}\n{lecturer}\n{kind}\n\n"
+            )
         }
     }
 }
